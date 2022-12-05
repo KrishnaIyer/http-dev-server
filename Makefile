@@ -19,3 +19,13 @@ docker.build:
 docker.push:
 	@echo "Push docker image..."
 	@docker push $(DOCKER_IMAGE):$(DOCKER_TAG)
+
+.PHONY: helm.build
+
+helm.build:
+	@echo "Build helm chart..."
+	@helm package helm
+
+helm.push:
+	@echo "Push helm chart..."
+	@helm push http-dev-server-helm-${OCI_TAG}.tgz oci://registry-1.docker.io/krishnaiyer

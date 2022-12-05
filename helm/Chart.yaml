@@ -1,6 +1,6 @@
 apiVersion: v2
-name: http-dev-server
-description: Charts for a simple HTTP Server.
+name: http-dev-server-helm
+description: Helm Charts for a simple HTTP Server.
 type: application
 
 version: 0.1.0

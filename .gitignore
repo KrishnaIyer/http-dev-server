@@ -3,3 +3,5 @@ main
 *.pem
 */*.pem
 .tmp
+*.tgz
+*.DS_Store
