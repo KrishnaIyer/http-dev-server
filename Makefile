@@ -24,7 +24,13 @@ docker.push:
 
 helm.build:
 	@echo "Build helm chart..."
-	@helm package helm
+	@helm package ./helm
+
+.PHONY: helm.sign
+
+helm.sign:
+	@echo "Sign helm chart..."
+	@helm gpg sign --local-user ${KEY} http-dev-server-helm-${OCI_TAG}.tgz
 
 helm.push:
 	@echo "Push helm chart..."
