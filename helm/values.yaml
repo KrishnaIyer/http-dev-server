@@ -1,0 +1,49 @@
+replicaCount: 1
+
+image:
+  repository: krishnaiyer/http-dev-server
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+
+ingress:
+  tls:
+    enabled: false
+  http:
+    entryPoints: [web]
+
+traefik:
+  deployment:
+    replicas: 1
+  ingressRoute:
+    dashboard:
+      enabled: false
+  ports:
+    web: # NOTE: This name is predefined in traefik.
+      protocol: TCP
+      port: 8080
+      expose: true
+      exposedPort: 80
+    #   redirectTo: websecure
+    # websecure: # NOTE: This name is predefined in traefik.
+    #   protocol: TCP
+    #   port: 8885
+    #   expose: true
+    #   exposedPort: 443
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 500Mi
+  requests:
+    cpu: 250m
+    memory: 250Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80

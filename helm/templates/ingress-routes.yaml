@@ -1,0 +1,20 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ include "http-dev-server.name" . }}-http
+  labels:
+    {{- include "http-dev-server.labels" . | nindent 4 }}
+spec:
+  entryPoints: {{ .Values.ingress.http.entryPoints }}
+  routes:
+    - kind: Rule
+      match: PathPrefix(`/`)
+      services:
+        - name: {{ include "http-dev-server.name" . }}
+          port: 8080
+          scheme: http
+
+---
+{{- if .Values.ingress.tls.enabled }}
+{{- include "http-dev-server.ingress-route-tls" . -}}
+{{- end }}

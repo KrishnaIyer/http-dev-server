@@ -1,0 +1,13 @@
+apiVersion: v2
+name: http-dev-server
+description: Charts for a simple HTTP Server.
+type: application
+
+version: 0.1.0
+
+appVersion: "0.1.0"
+
+dependencies:
+- name: traefik
+  version: '18.3.0'
+  repository: "https://helm.traefik.io/traefik"
