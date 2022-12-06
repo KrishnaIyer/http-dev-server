@@ -27,9 +27,6 @@ jobs:
       with:
         username: '${{ secrets.DOCKERHUB_USERNAME }}'
         password: '${{ secrets.DOCKERHUB_PASSWORD }}'
-    - name: Install GPG Helm plugin
-      run: |
-        helm plugin install https://github.com/KrishnaIyer/helm-gpg
     - name: Import the signing key
       run: |
         echo -n ${{ secrets.GPG_SIGNING_KEY }} | base64 --decode > priv.key

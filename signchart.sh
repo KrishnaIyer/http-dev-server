@@ -8,7 +8,7 @@ keyname=$2
 echo "Sign helm chart package $chart"
 shasum=$(openssl dgst -sha256 $chart | awk '{ print $2 }')
 echo $shasum
-chartyaml=$(tar -zxf $chart --exclude 'charts/' -O '*/Chart.yaml')
+chartyaml=$(tar -zxf $chart --exclude 'charts/' --wildcards -O '*/Chart.yaml')
 c=$(cat << EOF
 $chartyaml
 
