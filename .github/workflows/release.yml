@@ -1,0 +1,42 @@
+
+name: release
+on:
+  push:
+    tags:
+    - '*'
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Set output
+      run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+    - name: Install helm
+      uses: azure/setup-helm@v3
+      with:
+        version: 'v3.10.2'
+      id: install
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: '${{ secrets.DOCKERHUB_USERNAME }}'
+        password: '${{ secrets.DOCKERHUB_PASSWORD }}'
+    - name: Install GPG Helm plugin
+      run: |
+        helm plugin install https://github.com/technosophos/helm-gpg
+    - name: Import the signing key
+      run: |
+        key=$(echo -n ${{ secrets.GPG_SIGNING_KEY }} | base64 --decode)
+        printf '%s' '${{ secrets.GPG_SIGNING_PASSPHRASE }}' >/tmp/gpg_passphrase
+        cat /tmp/gpg_passphrase | gpg --passphrase-fd 0 --no-tty --batch --import $key
+    - name: Package helm
+      run: |
+        tag=${{ steps.vars.outputs.tag }}
+        key=${{ secrets.GPG_SIGNING_KEY_ID }}
+        echo Release version $tag
+        make helm.build
+        KEY=$key OCI_TAG=$tag helm.sign
+

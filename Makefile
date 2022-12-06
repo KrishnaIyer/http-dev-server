@@ -1,6 +1,8 @@
 
 DOCKER_IMAGE?=krishnaiyer/http-dev-server
 DOCKER_TAG?=latest
+OCI_REGISTRY=registry-1.docker.io
+OCI_REPO=krishnaiyer
 
 .PHONY: init
 
@@ -34,4 +36,4 @@ helm.sign:
 
 helm.push:
 	@echo "Push helm chart..."
-	@helm push http-dev-server-helm-${OCI_TAG}.tgz oci://registry-1.docker.io/krishnaiyer
+	@helm push http-dev-server-helm-${OCI_TAG}.tgz oci://${OCI_REGISTRY}/${OCI_REPO}
