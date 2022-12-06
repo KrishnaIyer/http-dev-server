@@ -29,7 +29,7 @@ jobs:
         password: '${{ secrets.DOCKERHUB_PASSWORD }}'
     - name: Install GPG Helm plugin
       run: |
-        helm plugin install https://github.com/technosophos/helm-gpg
+        helm plugin install https://github.com/KrishnaIyer/helm-gpg
     - name: Import the signing key
       run: |
         echo -n ${{ secrets.GPG_SIGNING_KEY }} | base64 --decode > priv.key
@@ -40,6 +40,7 @@ jobs:
         echo Release version ${{ env.RELEASE_VERSION }}
         make helm.build
         ls
+        export GPG_TTY=$(tty)
         KEY=${{ secrets.GPG_SIGNING_KEY_ID }} OCI_TAG=${{ env.RELEASE_VERSION }} make helm.sign
         OCI_TAG=${{ env.RELEASE_VERSION }} make helm.push
 
