@@ -29,6 +29,12 @@ helm.build:
 	@echo "Build helm chart..."
 	@helm package ./helm
 
+.PHONY: helm.sign
+
+helm.sign:
+	@echo "Sign helm package http-dev-server-helm-${OCI_TAG}.tgz"
+	@helm gpg sign --local-user ${KEY} http-dev-server-helm-${OCI_TAG}.tgz
+
 helm.push:
 	@echo "Push helm chart..."
 	@helm push http-dev-server-helm-${OCI_TAG}.tgz oci://${OCI_REGISTRY}/${OCI_REPO}
