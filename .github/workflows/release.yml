@@ -39,6 +39,6 @@ jobs:
       run: |
         echo Release version ${{ env.RELEASE_VERSION }}
         make helm.build
-        KEY=${{ secrets.GPG_SIGNING_KEY_ID }} OCI_TAG=${{ env.RELEASE_VERSION }} make helm.sign
+        ./signchart.sh http-dev-server-helm-${{ env.RELEASE_VERSION }}.tgz ${{ secrets.GPG_SIGNING_KEY_ID }}
         OCI_TAG=${{ env.RELEASE_VERSION }} make helm.push
 
