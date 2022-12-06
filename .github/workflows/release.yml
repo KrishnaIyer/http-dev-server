@@ -34,22 +34,7 @@ jobs:
         cat /tmp/gpg_passphrase | gpg --passphrase-fd 0 --no-tty --batch --import priv.key
     - name: Package helm and push
       run: |
-        GPG_TTY=$(tty)
-        export GPG_TTY
         echo Release version ${{ env.RELEASE_VERSION }}
         make helm.build
-        chart=http-dev-server-helm-${{ env.RELEASE_VERSION }}.tgz
-        echo "Sign helm chart package $chart"
-        shasum=$(openssl dgst -sha256 $chart | awk '{ print $2 }')
-        chartyaml=$(tar -zxf $chart --exclude 'charts/' --wildcards -O '*/Chart.yaml')
-        c=$(cat << EOF
-        $chartyaml
-
-        ...
-        files:
-          $chart: sha256:$shasum
-        EOF
-        )
-        echo "$c" | gpg --clearsign -o "$chart.prov" -u ${{ secrets.GPG_SIGNING_KEY_ID }}
         OCI_TAG=${{ env.RELEASE_VERSION }} make helm.push
 
