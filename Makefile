@@ -3,7 +3,7 @@ DOCKER_IMAGE?=krishnaiyer/http-dev-server
 DOCKER_TAG?=latest
 OCI_REGISTRY=registry-1.docker.io
 OCI_REPO=krishnaiyer
-
+HELM_PACKAGE_NAME?=http-dev-server-helm
 
 .PHONY: init
 
@@ -32,8 +32,10 @@ helm.build:
 .PHONY: helm.sign
 
 helm.sign:
-	@echo "Sign helm package http-dev-server-helm-${OCI_TAG}.tgz"
-	@helm gpg sign --local-user ${KEY} http-dev-server-helm-${OCI_TAG}.tgz
+	@echo "Sign helm package ${HELM_PACKAGE_NAME}-${OCI_TAG}.tgz"
+	cd ./util/signature && go build -o "../../signature" signature.go && cd ../..
+	@./signature --package ${HELM_PACKAGE_NAME}-${OCI_TAG}.tgz --private-key ${GPG_KEY_FILE} --passphrase ${GPG_PASSPHRASE}
+	rm signature
 
 helm.push:
 	@echo "Push helm chart..."
