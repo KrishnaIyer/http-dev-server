@@ -44,7 +44,7 @@ jobs:
         echo Release version ${{ env.RELEASE_VERSION }}
         make helm.build
         export GPG_PASSPHRASE=${{ secrets.GPG_SIGNING_PASSPHRASE }}
-        echo $GPG_PASSPHRASE
-        OCI_TAG=${{ env.RELEASE_VERSION }} GPG_KEY_FILE=/tmp/priv.key  make helm.sign
+        export GPG_KEY_FILE=/tmp/priv.key
+        OCI_TAG=${{ env.RELEASE_VERSION }} make helm.sign
         OCI_TAG=${{ env.RELEASE_VERSION }} make helm.push
 

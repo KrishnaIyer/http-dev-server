@@ -75,9 +75,6 @@ func main() {
 		log.Fatal("could not read private key: %w", err)
 	}
 	armored, err := helper.SignCleartextMessageArmored(string(privKey), []byte(passphrase), prov)
-	fmt.Println(string(privKey))
-	fmt.Println(passphrase)
-	fmt.Println(prov)
 	if err != nil {
 		log.Fatal("could not sign provenance file: %w", err)
 	}
