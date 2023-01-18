@@ -18,7 +18,6 @@ jobs:
         go-version: '~1.19'
     - name: Download Go dependencies
       run: |
-        ls
         pushd util/signature
         go mod download && go mod tidy
         popd
@@ -37,14 +36,15 @@ jobs:
       with:
         username: '${{ secrets.DOCKERHUB_USERNAME }}'
         password: '${{ secrets.DOCKERHUB_PASSWORD }}'
-    - name: Get the signing key and the passphrase
+    - name: Get the signing key
       run: |
         echo -n ${{ secrets.GPG_SIGNING_KEY }} | base64 --decode > /tmp/priv.key
-        printf '%s' '${{ secrets.GPG_SIGNING_PASSPHRASE }}' > /tmp/gpg_passphrase
     - name: Package Helm charts, sign and push
       run: |
         echo Release version ${{ env.RELEASE_VERSION }}
         make helm.build
-        OCI_TAG=${{ env.RELEASE_VERSION }} GPG_KEY_FILE=/tmp/priv.key GPG_PASSPHRASE=/tmp/gpg_passphrase make helm.sign
+        export GPG_PASSPHRASE=${{ secrets.GPG_SIGNING_PASSPHRASE }}
+        echo $GPG_PASSPHRASE
+        OCI_TAG=${{ env.RELEASE_VERSION }} GPG_KEY_FILE=/tmp/priv.key  make helm.sign
         OCI_TAG=${{ env.RELEASE_VERSION }} make helm.push
 

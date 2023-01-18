@@ -33,9 +33,9 @@ helm.build:
 
 helm.sign:
 	@echo "Sign helm package ${HELM_PACKAGE_NAME}-${OCI_TAG}.tgz"
-	cd ./util/signature && go build -o "../../signature" signature.go && cd ../..
+	@cd ./util/signature && go build -o "../../signature" signature.go && cd ../..
 	@./signature --package ${HELM_PACKAGE_NAME}-${OCI_TAG}.tgz --private-key ${GPG_KEY_FILE} --passphrase ${GPG_PASSPHRASE}
-	rm signature
+	@rm signature
 
 helm.push:
 	@echo "Push helm chart..."
