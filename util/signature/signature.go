@@ -70,11 +70,25 @@ func main() {
 	prov := strings.ReplaceAll(p.String(), "- ", " - - ") // Replace starting dashes as per RFC 4880 (https://www.rfc-editor.org/rfc/rfc4880#section-7.1)
 
 	// Sign the provenance file and write to the prov file.
-	privKey, err := os.ReadFile(privateKey)
+	rawKey, err := os.ReadFile(privateKey)
 	if err != nil {
 		log.Fatal("could not read private key: %w", err)
 	}
-	armored, err := helper.SignCleartextMessageArmored(string(privKey), []byte(passphrase), prov)
+	key := string(rawKey)
+
+	// Convert to an armored private key if it is not already.
+	if !strings.Contains(string(rawKey), "BEGIN PGP PRIVATE KEY BLOCK") {
+		k, err := crypto.NewKey(rawKey)
+		if err != nil {
+			log.Fatal("could not read key: %w", err)
+		}
+		key, err = k.Armor()
+		if err != nil {
+			log.Fatal("could not armor key: %w", err)
+		}
+	}
+
+	armored, err := helper.SignCleartextMessageArmored(key, []byte(passphrase), prov)
 	if err != nil {
 		log.Fatal("could not sign provenance file: %w", err)
 	}
